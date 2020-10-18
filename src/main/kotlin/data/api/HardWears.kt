@@ -26,11 +26,11 @@ data class Storage(
     val maker: String = "",
     @SerialName("capacity")
     val capacity: Long = 0,
-    @SerialName("type")
-    val type: Type = Type.UNKNOWN,
+    @SerialName("category")
+    val category: Category = Category.UNKNOWN,
 ) : HardWear() {
     @Serializable
-    enum class Type {
+    enum class Category {
         SSD,
         HDD,
         SSHD,

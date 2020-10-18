@@ -1,6 +1,7 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
 import data.api.Cpu
+import data.api.HardWear
 import data.api.Message
 import data.api.Storage
 import data.api.User
@@ -37,10 +38,10 @@ suspend fun main() = coroutineScope<Unit> {
                 )
 
                 val storageList = listOf(
-                    Storage("WESTERN DIGITAL", 6L * 1024 * 1024 * 1024 * 1024, Storage.Type.HDD),
-                    Storage("crucial", 500L * 1024 * 1024 * 1024, Storage.Type.SSD),
-                    Storage("Samsung", 1L * 1024 * 1024 * 1024 * 1024, Storage.Type.NVM_EXPRESS),
-                    Storage("TOSHIBA", 1L * 1024 * 1024 * 1024 * 1024, Storage.Type.SSHD),
+                    Storage("WESTERN DIGITAL", 6L * 1024 * 1024 * 1024 * 1024, Storage.Category.HDD),
+                    Storage("crucial", 500L * 1024 * 1024 * 1024, Storage.Category.SSD),
+                    Storage("Samsung", 1L * 1024 * 1024 * 1024 * 1024, Storage.Category.NVM_EXPRESS),
+                    Storage("TOSHIBA", 1L * 1024 * 1024 * 1024 * 1024, Storage.Category.SSHD),
                 )
 
                 when (request.url.fullPath) {
@@ -58,6 +59,12 @@ suspend fun main() = coroutineScope<Unit> {
                     }
                     "/all_storage" -> {
                         respondJson(storageList)
+                    }
+                    "/hard_wear" -> {
+                        respondJson((cpuList + storageList).random())
+                    }
+                    "/all_hard_wear" -> {
+                        respondJson(cpuList + storageList)
                     }
                     "/unauthorized" -> respondErrorJson(HttpStatusCode.Unauthorized)
                     "/internal_server_error" -> respondErrorJson(HttpStatusCode.InternalServerError)
@@ -80,6 +87,8 @@ suspend fun main() = coroutineScope<Unit> {
     httpClient.get<HttpResponse>(path = "/all_cpu").statusReceive<List<Cpu>>().p()
     httpClient.get<HttpResponse>(path = "/storage").statusReceive<Storage>().p()
     httpClient.get<HttpResponse>(path = "/all_storage").statusReceive<List<Storage>>().p()
+    httpClient.get<HttpResponse>(path = "/hard_wear").statusReceive<HardWear>().p()
+    httpClient.get<HttpResponse>(path = "/all_hard_wear").statusReceive<List<HardWear>>().p()
 
     // エラー受け取り
     httpClient.get<HttpResponse>(path = "/unauthorized").statusReceive<User>().p()
